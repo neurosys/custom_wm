@@ -184,6 +184,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static void nametag(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
@@ -194,6 +195,7 @@ static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
+static void runAutostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
@@ -212,7 +214,9 @@ static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
+static void ntoggleview(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void view_adjacent(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
@@ -226,6 +230,7 @@ static void updatestatus(void);
 static void updatewindowtype(Client *c);
 static void updatetitle(Client *c);
 static void updatewmhints(Client *c);
+static void nview(const Arg *arg);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
@@ -1214,6 +1219,55 @@ movemouse(const Arg *arg)
 	}
 }
 
+void
+view_adjacent(const Arg *arg)
+{
+	int i, curtags;
+	int seltag = 0;
+	Arg a;
+
+	curtags = selmon->tagset[selmon->seltags];
+	for(i = 0; i < LENGTH(tags); i++)
+		if(curtags & (1 << i)){
+			seltag = i;
+			break;
+		}
+
+	seltag = (seltag + arg->i) % (int)LENGTH(tags);
+	if(seltag < 0)
+		seltag += LENGTH(tags);
+
+	a.i = (1 << seltag);
+	view(&a);
+}
+
+void
+nametag(const Arg *arg) {
+	char *p, name[MAX_TAGLEN];
+	FILE *f;
+	int i;
+
+	errno = 0; // popen(3p) says on failure it "may" set errno
+	if(!(f = popen("dmenu < /dev/null", "r"))) {
+		fprintf(stderr, "dwm: popen 'dmenu < /dev/null' failed%s%s\n", errno ? ": " : "", errno ? strerror(errno) : "");
+		return;
+	}
+	if (!(p = fgets(name, MAX_TAGLEN, f)) && (i = errno) && ferror(f))
+		fprintf(stderr, "dwm: fgets failed: %s\n", strerror(i));
+	if (pclose(f) < 0)
+		fprintf(stderr, "dwm: pclose failed: %s\n", strerror(errno));
+	if(!p)
+		return;
+	if((p = strchr(name, '\n')))
+		*p = '\0';
+
+	for(i = 0; i < LENGTH(tags); i++)
+		if(selmon->tagset[selmon->seltags] & (1 << i))
+			strcpy(tags[i], name);
+	drawbars();
+}
+
+
 Client *
 nexttiled(Client *c)
 {
@@ -1400,6 +1454,13 @@ run(void)
 	while (running && !XNextEvent(dpy, &ev))
 		if (handler[ev.type])
 			handler[ev.type](&ev); /* call handler */
+}
+
+void
+runAutostart(void) {
+	system("cd ~/.dwm; ./autostart_blocking.sh");
+	system("cd ~/.dwm; ./autostart.sh &");
+	system("cd ~/");
 }
 
 void
@@ -1733,6 +1794,17 @@ toggletag(const Arg *arg)
 }
 
 void
+ntoggleview(const Arg *arg) {
+	const Arg n = {.i = +1};
+	const int mon = selmon->num;
+	do {
+		focusmon(&n);
+		toggleview(arg);
+	}
+	while (selmon->num != mon);
+}
+
+void
 toggleview(const Arg *arg)
 {
 	unsigned int newtagset = selmon->tagset[selmon->seltags] ^ (arg->ui & TAGMASK);
@@ -2034,6 +2106,17 @@ updatewmhints(Client *c)
 }
 
 void
+nview(const Arg *arg) {
+	const Arg n = {.i = +1};
+	const int mon = selmon->num;
+	do {
+		focusmon(&n);
+		view(arg);
+	}
+	while (selmon->num != mon);
+}
+
+void
 view(const Arg *arg)
 {
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
@@ -2139,6 +2222,7 @@ main(int argc, char *argv[])
 	checkotherwm();
 	setup();
 	scan();
+	runAutostart();
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

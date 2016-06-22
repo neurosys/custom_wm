@@ -2,9 +2,9 @@
 
 /* appearance */
 static const char *fonts[] = {
-	"monospace:size=10"
+	"monospace:size=12"
 };
-static const char dmenufont[]       = "monospace:size=10";
+static const char dmenufont[]       = "monospace:size=12";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#bbbbbb";
@@ -17,16 +17,20 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+#define MAX_TAGLEN 16
+static char tags[][MAX_TAGLEN] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class              instance            title       tags mask     isfloating   monitor */
+	{ "Gimp",             NULL,               NULL,       0,            1,           -1 },
+	{ "Firefox",          NULL,               NULL,       1 << 8,       0,           -1 },
+	{ "Vlc",              "vlc",              NULL,       1 << 6,       1,           -1 },
+	{ "Pavucontrol",      "pavucontrol",      NULL,       1 << 6,       1,           -1 },
+	{ "Thunderbird",      NULL,               NULL,       1 << 6,       0,           -1 },
 };
 
 /* layout(s) */
@@ -83,8 +87,11 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+ 	{ MODKEY,                       XK_n,      nametag,        {0} },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+    { MODKEY,                       XK_i,      view_adjacent,  {.i = +1 } },
+    { MODKEY,                       XK_u,      view_adjacent,  {.i = -1 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -94,7 +101,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY,                       XK_grave,  reset_view,     {0} },
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
@@ -104,15 +110,14 @@ static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkMonNum,            0,              Button1,        focusmon,       {.i = +1} },
-	{ ClkMonNum,            0,              Button2,        reset_view,     {0} },
-	{ ClkMonNum,            0,              Button3,        focusmon,       {.i = -1} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
+    { ClkTagBar,            0,              Button4,        view_adjacent,  { .i = +1 } },
+    { ClkTagBar,            0,              Button5,        view_adjacent,  { .i = -1 } },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY|WINKEY,  Button1,        nview,          {0} },
 	{ ClkTagBar,            MODKEY|WINKEY,  Button3,        ntoggleview,    {0} },
