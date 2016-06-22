@@ -4,7 +4,7 @@
 static const char *fonts[] = {
 	"monospace:size=12"
 };
-static const char dmenufont[]       = "monospace:size=12";
+static const char dmenufont[]       = "monospace:size=14";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#bbbbbb";
@@ -30,7 +30,8 @@ static const Rule rules[] = {
 	{ "Firefox",          NULL,               NULL,       1 << 8,       0,           -1 },
 	{ "Vlc",              "vlc",              NULL,       1 << 6,       1,           -1 },
 	{ "Pavucontrol",      "pavucontrol",      NULL,       1 << 6,       1,           -1 },
-	{ "Thunderbird",      NULL,               NULL,       1 << 6,       0,           -1 },
+	{ "Thunderbird",      NULL,               NULL,       1 << 7,       0,           -1 },
+	{ "VirtualBox",       NULL,               NULL,       1 << 5,       1,           -1 },
 };
 
 /* layout(s) */
