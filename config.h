@@ -18,8 +18,8 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
 #define MAX_TAGLEN 16
-/* static char tags[][MAX_TAGLEN] = { "1",   "2",  "3", "4", "5",    "6", "7",  "8", "9" }; */
-  static char tags[][MAX_TAGLEN] = { "sys", "dev", "3", "4", "vmx", "snd", "7", "8", "web" };
+/* static char tags[][MAX_TAGLEN] = { "1",   "2",  "3", "4", "5", "6",   "7",   "8",   "9" }; */
+  static char tags[][MAX_TAGLEN] = { "sys", "dev", "3", "4", "5", "6",  "vmx", "snd", "net" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -29,10 +29,10 @@ static const Rule rules[] = {
 	/* class              instance            title       tags mask     isfloating   monitor */
 	{ "Gimp",             NULL,               NULL,       0,            1,           -1 },
 	{ "Firefox",          NULL,               NULL,       1 << 8,       0,           -1 },
-	{ "Vlc",              "vlc",              NULL,       1 << 6,       1,           -1 },
-	{ "Pavucontrol",      "pavucontrol",      NULL,       1 << 6,       1,           -1 },
+	{ "Vlc",              "vlc",              NULL,       1 << 7,       1,           -1 },
+	{ "Pavucontrol",      "pavucontrol",      NULL,       1 << 7,       1,           -1 },
 	{ "Thunderbird",      NULL,               NULL,       1 << 8,       0,            1 },
-	{ "VirtualBox",       NULL,               NULL,       1 << 5,       1,            1 },
+	{ "VirtualBox",       NULL,               NULL,       1 << 6,       1,            1 },
 };
 
 /* layout(s) */
