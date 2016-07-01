@@ -46,6 +46,8 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "[M]",      monocle },
  	{ "###",      horizgrid },
+  	{ "[@]",      spiral },
+  	{ "[\\]",     dwindle },
 };
 
 /* key definitions */
@@ -85,6 +87,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_f,                setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_m,                setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_e,                setlayout,      {.v = &layouts[3]} },
+	{ MODKEY,                       XK_s,                setlayout,      {.v = &layouts[4]} },
+	{ MODKEY,                       XK_a,                setlayout,      {.v = &layouts[5]} },
 	{ MODKEY,                       XK_space,            setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,            togglefloating, {0} },
 	{ MODKEY,                       XK_0,                view,           {.ui = ~0 } },
