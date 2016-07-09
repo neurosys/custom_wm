@@ -30,3 +30,10 @@ dwm with patches:
     | Only patch 2 applied (unified view)
     http://dwm.suckless.org/patches/multimon
 
+
+st with patches:
+- alpha
+    | provide default transparency for st terminal
+    http://st.suckless.org/patches/alpha
+
+dmenu
