@@ -37,3 +37,6 @@ st with patches:
     http://st.suckless.org/patches/alpha
 
 dmenu
+- incremental
+    | incremental search
+    http://tools.suckless.org/dmenu/patches/incremental
