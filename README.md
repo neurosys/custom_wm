@@ -29,6 +29,15 @@ dwm with patches:
     | and <Mod-Shift-<0-9> > to select the tag on both monitors
     | Only patch 2 applied (unified view)
     http://dwm.suckless.org/patches/multimon
+- horizgrid
+    | Like tile but horizontal
+    http://dwm.suckless.org/patches/horizgrid
+- centermaster
+    | New layout with a central group hovering above the others
+    http://dwm.suckless.org/patches/centeredmaster
+- combo
+    | Press Mod and all the numbers for all the tags you want to see toghether
+    http://dwm.suckless.org/patches/combo
 
 
 st with patches:
