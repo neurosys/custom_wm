@@ -38,6 +38,9 @@ dwm with patches:
 - combo
     | Press Mod and all the numbers for all the tags you want to see toghether
     http://dwm.suckless.org/patches/combo
+- resizecorners
+    | Resize windows grabbing from any of the corners
+    http://dwm.suckless.org/patches/resizecorners
 
 
 st with patches:
