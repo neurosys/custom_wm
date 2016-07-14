@@ -215,6 +215,8 @@ static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
+static void htile(Monitor *);
+static void centeredmaster(Monitor *);
 void horizgrid(Monitor *m);
 void dwindle(Monitor *mon);
 void spiral(Monitor *mon);
@@ -1853,6 +1855,72 @@ tile(Monitor *m)
 			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
 			ty += HEIGHT(c);
 			sfacts -= c->cfact;
+		}
+}
+
+void
+htile(Monitor *m) {
+	unsigned int i, n, w, mh, mx, tx;
+	Client *c;
+
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if(n == 0)
+		return;
+
+	if(n > m->nmaster)
+		mh = m->nmaster ? m->wh * m->mfact : 0;
+	else
+		mh = m->wh;
+	for(i = mx = tx = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if(i < m->nmaster) {
+			w = (m->ww - mx) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx + mx, m->wy, w - (2*c->bw), mh - (2*c->bw), False);
+			mx += WIDTH(c);
+		}
+		else {
+			w = (m->ww - tx) / (n - i);
+			resize(c, m->wx + tx, m->wy + mh, w - (2*c->bw), m->wh - mh - (2*c->bw), False);
+			tx += WIDTH(c);
+		}
+}
+
+void
+centeredmaster(Monitor *m)
+{
+	unsigned int i, n, w, mh, mw, mx, mxo, my, myo, tx;
+	Client *c;
+
+	// Count number of clients in the selected monitor
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if(n == 0)
+		return;
+
+	// initialize nmaster area
+	if(n > m->nmaster) {
+		// go mfact box in the center if more than nmaster clients
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+		mh = m->nmaster ? m->wh * m->mfact : 0;
+		mx = mxo = (m->ww - mw) / 2;
+		my = myo = (m->wh - mh) / 2;
+	} else {
+		// Go fullscreen if all clients are in the master area
+		mh = m->wh;
+		mw = m->ww;
+		mx = mxo = 0;
+		my = mxo = 0;
+	}
+
+	for(i = tx = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if(i < m->nmaster) {
+			// nmaster clients are stacked horizontally, in the center of the screen
+			w = (mw + mxo - mx) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx + mx, m->wy + my, w - (2*c->bw), mh - (2*c->bw), False);
+			mx += WIDTH(c);
+		} else {
+			// Stack clients are stacked horizontally
+			w = (m->ww - tx) / (n - i);
+			resize(c, m->wx + tx, m->wy, w - (2*c->bw), m->wh - (2*c->bw), False);
+			tx += WIDTH(c);
 		}
 }
 
