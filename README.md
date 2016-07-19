@@ -41,6 +41,10 @@ dwm with patches:
 - resizecorners
     | Resize windows grabbing from any of the corners
     http://dwm.suckless.org/patches/resizecorners
+- moveresize
+    | Move windows using Mod + arrow keys
+    | Resize windows using Mod + Shift + arrow keys
+    http://dwm.suckless.org/patches/moveresize
 
 
 st with patches:
