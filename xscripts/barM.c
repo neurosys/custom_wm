@@ -132,9 +132,15 @@ static const char* battery()
     count++;
     char buf[256];
     char out[16];
-    get_acpi_output(buf, 256);
-    extract_acpi_info(buf, out);
-    snprintf(bat, 128, " [Bat %s] ", out);
+    if (get_acpi_output(buf, 256) != 0)
+    {
+        extract_acpi_info(buf, out);
+        snprintf(bat, 128, " [Bat %s] ", out);
+    }
+    else
+    {
+        snprintf(bat, "");
+    }
     return bat;
 }
 
@@ -219,6 +225,10 @@ void extract_acpi_info(char* buf, char* out) {
 
 int get_acpi_output(char* buf, int size) {
     FILE* f = popen("acpi", "r");
+    if (f == NULL)
+    {
+        return 0;
+    }
     int output_length = fread(buf, size, 1, f);
     pclose(f);
     return output_length;
